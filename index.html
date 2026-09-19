@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RP Database</title>
+</head>
 
+<body>
+
+    <h1>RP Database</h1>
+
+    <p>Roblox RP プレイヤー検索</p>
+
+    <input type="text" id="username" placeholder="Robloxユーザー名">
+
+    <button onclick="searchPlayer()">検索</button>
+
+    <div id="result"></div>
+
+    <script>
+        function searchPlayer() {
+            const username = document.getElementById("username").value;
+
+            if (username === "") {
+                document.getElementById("result").innerHTML =
+                    "<p>ユーザー名を入力してください。</p>";
+                return;
+            }
+
+            document.getElementById("result").innerHTML = `
+                <h2>${username}</h2>
+                <p>階級：伍長</p>
+                <p>ポイント：75pt</p>
+                <p>次の階級：軍曹</p>
+                <p>必要ポイント：150pt</p>
+                <p>あと：75pt</p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
