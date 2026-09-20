@@ -1,43 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RP Database</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RP Database</title>
 </head>
 
 <body>
 
-    <h1>RP Database</h1>
+  <h1>RP Database</h1>
 
-    <p>Roblox RP プレイヤー検索</p>
+  <input id="username" type="text" placeholder="Robloxユーザー名">
+  <button onclick="searchPlayer()">検索</button>
 
-    <input type="text" id="username" placeholder="Robloxユーザー名">
+  <div id="result"></div>
 
-    <button onclick="searchPlayer()">検索</button>
+  <script>
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_KEY = "sb_publishable_vQ9rSiRlomm-Ekka7oyGRg_m7XevQNA";
+    async function searchPlayer() {
+      const username = document.getElementById("username").value.trim();
+      const result = document.getElementById("result");
 
-    <div id="result"></div>
+      if (!username) {
+        result.innerHTML = "ユーザー名を入力してください。";
+        return;
+      }
 
-    <script>
-        function searchPlayer() {
-            const username = document.getElementById("username").value;
+      result.innerHTML = "検索中...";
 
-            if (username === "") {
-                document.getElementById("result").innerHTML =
-                    "<p>ユーザー名を入力してください。</p>";
-                return;
-            }
-
-            document.getElementById("result").innerHTML = `
-                <h2>${username}</h2>
-                <p>階級：伍長</p>
-                <p>ポイント：75pt</p>
-                <p>次の階級：軍曹</p>
-                <p>必要ポイント：150pt</p>
-                <p>あと：75pt</p>
-            `;
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/players?username=eq.${encodeURIComponent(username)}&select=*`,
+        {
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
+          }
         }
-    </script>
+      );
+
+      if (!response.ok) {
+        result.innerHTML = "データ取得に失敗しました。";
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        result.innerHTML = "プレイヤーが見つかりませんでした。";
+        return;
+      }
+
+      const player = data[0];
+
+      result.innerHTML = `
+        <h2>${player.username}</h2>
+        <p>階級：${player.rank}</p>
+        <p>ポイント：${player.points}pt</p>
+      `;
+    }
+  </script>
 
 </body>
 </html>
